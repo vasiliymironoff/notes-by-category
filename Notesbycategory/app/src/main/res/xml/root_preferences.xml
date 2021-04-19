@@ -1,0 +1,26 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreferenceCompat
+        app:key="theme"
+        app:summaryOff="@string/attachment_summary_off"
+        app:summaryOn="@string/attachment_summary_on"
+        app:title="@string/theme" />
+
+    <PreferenceCategory app:title="@string/header_setting">
+
+        <SeekBarPreference
+            android:title="Количество категорий"
+            app:min="1"
+            android:max="10"
+            app:key="count"
+            app:defaultValue="4"
+            app:showSeekBarValue="true"
+            />
+
+
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>
