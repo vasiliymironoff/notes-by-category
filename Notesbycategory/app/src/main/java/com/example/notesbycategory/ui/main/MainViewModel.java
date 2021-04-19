@@ -28,7 +28,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public void restartDataInModel(){
-        count.setValue(PreferenceManager.getDefaultSharedPreferences(App.getInstance().getApplicationContext()).getInt("count", 4));
+        count.setValue(PreferenceManager.getDefaultSharedPreferences(App.getInstance().getApplicationContext()).getInt("count", 0));
         for(int i=0; i<count.getValue(); i++){
             noteByCategory.add(loadNotesByCategory(i));
         }

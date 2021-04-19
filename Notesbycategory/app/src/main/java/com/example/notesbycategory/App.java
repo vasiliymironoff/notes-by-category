@@ -32,7 +32,7 @@ public class App extends Application {
 
         notesDAO = database.getNotesDAO();
         categoryDAO = database.getCategoryDAO();
-        
+
     }
 
     public static App getInstance() {

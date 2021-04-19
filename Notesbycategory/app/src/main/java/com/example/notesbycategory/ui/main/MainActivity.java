@@ -69,14 +69,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         });
 
-        model.count.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                MainPagerAdapter.ncount = integer;
-                adapter.notifyDataSetChanged();
-            }
-        });
-
 
         pager.setAdapter(adapter);
         tablayout.setupWithViewPager(pager);

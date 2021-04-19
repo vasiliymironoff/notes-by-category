@@ -20,7 +20,6 @@ import java.util.List;
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
     static List<Category> title = new ArrayList<>();
-    static int ncount;
 
 
 
@@ -37,14 +36,14 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return ncount;
+        return title.size();
     }
 
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
         for(Category c: title){
-            if(c.getId() == position){
+            if(c.getId() == position) {
                 return c.getName();
             }
         }

@@ -21,4 +21,7 @@ public interface CategoryDAO {
 
     @Insert
     void insert(Category category);
+
+    @Query("DELETE FROM category")
+    void deleteAll();
 }
