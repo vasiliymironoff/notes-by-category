@@ -32,13 +32,7 @@ public class App extends Application {
 
         notesDAO = database.getNotesDAO();
         categoryDAO = database.getCategoryDAO();
-
-        if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("firstrun", true)){
-            for(int i=0; i<10; i++){
-                categoryDAO.insert(new Category(i, "Категория " + (i + 1)));
-            }
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("firstrun", false).apply();
-        }
+        
     }
 
     public static App getInstance() {
