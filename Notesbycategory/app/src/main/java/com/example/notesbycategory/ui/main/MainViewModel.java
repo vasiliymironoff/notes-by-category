@@ -18,18 +18,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainViewModel extends ViewModel {
-    MutableLiveData<Integer> count = new MutableLiveData<>();
+    int count;
     List<LiveData<List<Note>>> noteByCategory = new ArrayList<>();
-    MutableLiveData<Long> startDetail = new MutableLiveData<>();
+
     LiveData<List<Category>> category = App.getInstance().getCategoryDAO().getCategory();
+
+    MutableLiveData<Long> startDetail = new MutableLiveData<>();
+    MutableLiveData<Long> startDeleteDialog = new MutableLiveData<>();
+
 
     public MainViewModel(){
         restartDataInModel();
     }
 
     public void restartDataInModel(){
-        count.setValue(PreferenceManager.getDefaultSharedPreferences(App.getInstance().getApplicationContext()).getInt("count", 0));
-        for(int i=0; i<count.getValue(); i++){
+        count = App.getInstance().getCategoryDAO().getCategoryNoLiveData().size();
+        for(int i=0; i<count; i++){
             noteByCategory.add(loadNotesByCategory(i));
         }
     }
@@ -44,6 +48,14 @@ public class MainViewModel extends ViewModel {
 
     public LiveData<Long> getStartDetail() {
         return startDetail;
+    }
+
+    public void setupNoteForStartDeleteDialog(long id){
+        startDeleteDialog.setValue(id);
+    }
+
+    public LiveData<Long> getDeleteDialog(){
+        return startDeleteDialog;
     }
 
 }

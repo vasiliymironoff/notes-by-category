@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, titles);
+        spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_simple_spinner, titles);
         spinner.setAdapter(spinnerAdapter);
         spinner.setPrompt("Категории");
 

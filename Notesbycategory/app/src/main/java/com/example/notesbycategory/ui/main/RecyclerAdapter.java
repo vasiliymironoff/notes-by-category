@@ -1,6 +1,8 @@
 package com.example.notesbycategory.ui.main;
 
+import android.app.AlertDialog;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +11,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
 import com.example.notesbycategory.model.Note;
+import com.example.notesbycategory.ui.dialog.DialogDelete;
 
 import java.util.List;
 
@@ -77,6 +81,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     @Override
     public void onBindViewHolder(@NonNull RecyclerNoteHolder holder, int position) {
         holder.bind(notes.get(position));
+
     }
 
     @Override
@@ -122,7 +127,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    App.getInstance().getNotesDAO().delete(note);
+                    model.setupNoteForStartDeleteDialog(note.getMid());
                 }
             });
 

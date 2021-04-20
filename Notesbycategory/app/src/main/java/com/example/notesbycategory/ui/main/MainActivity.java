@@ -21,6 +21,7 @@ import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
 import com.example.notesbycategory.model.Category;
 import com.example.notesbycategory.ui.detail.DetailActivity;
+import com.example.notesbycategory.ui.dialog.DialogDelete;
 import com.example.notesbycategory.ui.preference.SettingsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
@@ -85,6 +86,18 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 DetailActivity.start(MainActivity.this, aLong, pager.getCurrentItem());
             }
         });
+
+        model.getDeleteDialog().observe(this, new Observer<Long>() {
+            @Override
+            public void onChanged(Long aLong) {
+                DialogDelete dialog = new DialogDelete();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", Integer.valueOf(String.valueOf(aLong)));
+                dialog.setArguments(bundle);
+                dialog.show(getSupportFragmentManager(), "delete");
+            }
+        });
+
 
     }
 

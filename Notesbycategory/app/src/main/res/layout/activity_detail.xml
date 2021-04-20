@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+
         >
 
         <androidx.appcompat.widget.Toolbar
@@ -22,27 +23,56 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:prompt="@color/red"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar"
-        android:popupBackground="@color/light"
-        android:backgroundTint="@color/red"/>
-
-    <EditText
-        android:id="@+id/edittext"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top"
-        android:hint="Напишите заметку"
-        android:minHeight="50dp"
-        android:padding="20dp"
-        android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/spinner"
-        tools:text="Text" />
+        android:layout_height="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appbar"
+        android:padding="20dp">
+        <LinearLayout
+            android:id="@+id/category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentTop="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="19sp"
+
+                android:text="Категория: "
+                android:layout_marginRight="10dp"/>
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:prompt="@color/red"
+
+                android:popupBackground="@color/light"
+                android:backgroundTint="@color/red"
+                android:spinnerMode="dialog"/>
+        </LinearLayout>
+        <View
+            android:id="@+id/br"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/red"
+            android:layout_below="@id/category"/>
+
+        <EditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top"
+
+            android:hint="Напишите заметку"
+            android:minHeight="50dp"
+            android:padding="20dp"
+            android:textSize="17sp"
+            android:layout_below="@id/br"
+            tools:text="Text" />
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.notesbycategory.ui.initial;
 
 import android.icu.text.MessagePattern;
+import android.renderscript.ScriptGroup;
 import android.text.Layout;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -11,10 +12,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.notesbycategory.R;
+import com.example.notesbycategory.databinding.ItemEditcategoryBinding;
 import com.example.notesbycategory.model.Category;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -23,63 +27,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Handler;
 
-public class InitialAdapter extends RecyclerView.Adapter<InitialAdapter.HolderCategory> implements ObservableForEditText {
+public class InitialAdapter extends RecyclerView.Adapter<InitialAdapter.CategoryHolder> {
 
-    public int count;
-    public List<EditText> editTexts = new ArrayList<>();
+    public static InitialViewModel model;
 
 
+    public InitialAdapter(InitialViewModel model){
+        this.model = model;
+    }
     @NonNull
     @Override
-    public HolderCategory onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new HolderCategory(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_editcategory, parent, false), this);
+    public CategoryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        ItemEditcategoryBinding holder = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_editcategory, parent, false);
+
+        return new CategoryHolder(holder);
+
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HolderCategory holder, int position) {
+    public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
+        if(model.category.size() <= position){
+            model.category.add(new Category(position, ""));
+        }
+
         holder.bind(position);
     }
 
     @Override
     public int getItemCount() {
-        return count;
+        return model.count.get();
     }
 
-    @Override
-    public void addEditText(EditText editText) {
-        editTexts.add(editText);
-    }
-
-    @Override
-    public List<String> getStringList() {
-        List<String> title = new ArrayList<>();
-        for(EditText editText: editTexts){
-            title.add(editText.getText().toString());
-        }
-        return title;
-    }
-
-    @Override
-    public void removeEditText(EditText editText) {
-        editTexts.remove(editText);
-    }
-
-
-    public static class HolderCategory extends RecyclerView.ViewHolder {
-        TextInputEditText editText;
-        TextInputLayout layout;
-        int positionInAdapter;
-        public HolderCategory(@NonNull View itemView, ObservableForEditText observable) {
-            super(itemView);
-            editText = itemView.findViewById(R.id.edittext);
-            observable.addEditText(editText);
-            layout = itemView.findViewById(R.id.textinput_counter);
+    public static class CategoryHolder extends RecyclerView.ViewHolder{
+        ItemEditcategoryBinding binding;
+        public CategoryHolder(@NonNull ItemEditcategoryBinding itemView) {
+            super(itemView.getRoot());
+            binding = itemView;
+            binding.executePendingBindings();
         }
         public void bind(int position){
-            positionInAdapter = position;
-            layout.setHint("Категория " + (position+1));
+            binding.setCategory(model.category.get(position));
         }
-
     }
+
+
 }

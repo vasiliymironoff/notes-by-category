@@ -28,6 +28,8 @@ public interface NotesDAO {
     @Query("DELETE FROM Note WHERE category = :category")
     void deleteAllByCategory(int category);
 
+    @Query("DELETE FROM Note WHERE mid=:id")
+    void deleteNoteById(int id);
     @Insert
     void insert(Note note);
 

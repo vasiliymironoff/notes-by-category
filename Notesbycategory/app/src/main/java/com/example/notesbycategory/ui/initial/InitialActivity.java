@@ -3,6 +3,7 @@ package com.example.notesbycategory.ui.initial;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -32,21 +33,19 @@ public class InitialActivity extends AppCompatActivity {
     InitialAdapter adapter;
     SeekBar seekBar;
 
+    com.example.notesbycategory.databinding.ActivityInitialBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         startMainActivity();
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_initial);
-
-
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_initial);
         initToolbar();
         model = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())).get(InitialViewModel.class);
+        binding.setModel(model);
         initRecycler();
         seekBar = findViewById(R.id.seekbar);
-        model.setCount(seekBar.getProgress());
+
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -61,31 +60,19 @@ public class InitialActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                model.setCount(seekBar.getProgress());
-            }
-        });
-
-        model.count.observe(this, new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                adapter.count = integer;
-                adapter.editTexts.clear();
                 adapter.notifyDataSetChanged();
-
             }
         });
-
-
     }
     private void initToolbar(){
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = binding.getRoot().findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Начальная настройка");
     }
 
     private void initRecycler(){
-        adapter = new InitialAdapter();
-        recyclerView = findViewById(R.id.recycler);
+        adapter = new InitialAdapter(model);
+        recyclerView = binding.getRoot().findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
@@ -100,22 +87,23 @@ public class InitialActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.accept){
             //Сохраняем изменения в базу данных + переходим в MainActivity
-            List<String> title = new ArrayList<>();
-            int count = 0;
-            for(String s: adapter.getStringList()){
-                count++;
-                if(s.equals("")){
-                    title.add("Категория " + count);
+            List<Category> categoryList = model.category;
+            for(int i=0; i<model.count.get(); i++){
+                Category c = model.category.get(i);
+
+                if(c.getName().equals("")){
+                    c.setName("Категория " + (c.getId()+1));
+                }
+
+                if(App.getInstance().getCategoryDAO().getCategoryById((int)c.getId()) == null){
+                    App.getInstance().getCategoryDAO().insert(c);
                 } else {
-                    title.add(s);
+                    App.getInstance().getCategoryDAO().updateCategory(c);
                 }
             }
-            for(int i=0; i<count; i++){
-                App.getInstance().getCategoryDAO().insert(new Category(i, title.get(i)));
-            }
+
 
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first",false).apply();
-            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("count", count).apply();
             startMainActivity();
         }
         return super.onOptionsItemSelected(item);

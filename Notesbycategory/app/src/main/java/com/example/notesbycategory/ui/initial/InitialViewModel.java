@@ -1,6 +1,9 @@
 package com.example.notesbycategory.ui.initial;
 
 import androidx.cardview.widget.CardView;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableInt;
+import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,15 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InitialViewModel extends ViewModel {
-    MutableLiveData<Integer> count = new MutableLiveData<Integer>();
-
-
-    public void setCount(int newCount){
-        count.postValue(newCount);
-    }
-    public LiveData<Integer> getCount(){
-        return count;
-    }
+    public ObservableInt count = new ObservableInt(9);
+    ObservableList<Category> category = new ObservableArrayList<>();
 
 
 }
