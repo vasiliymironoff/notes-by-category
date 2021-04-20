@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Notes by category</string>
+    <string name="theme">Темная тема</string>
+    <string name="attachment_summary_on">Темная тема включена
+    </string>
+    <string name="attachment_summary_off">Темная тема выключена</string>
+    <string name="header_setting">Функционал</string>
+
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+
+</resources>
