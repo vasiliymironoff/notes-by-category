@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.preference.PreferenceManager;
 
 import com.example.notesbycategory.App;
+import com.example.notesbycategory.SingleLiveEvent;
 import com.example.notesbycategory.model.Category;
 import com.example.notesbycategory.model.Note;
 
@@ -23,8 +24,8 @@ public class MainViewModel extends ViewModel {
 
     LiveData<List<Category>> category = App.getInstance().getCategoryDAO().getCategory();
 
-    MutableLiveData<Long> startDetail = new MutableLiveData<>();
-    MutableLiveData<Long> startDeleteDialog = new MutableLiveData<>();
+    SingleLiveEvent<Long> startDetail = new SingleLiveEvent<>();
+    SingleLiveEvent<Long> startDeleteDialog = new SingleLiveEvent<>();
 
 
     public MainViewModel(){
@@ -46,7 +47,7 @@ public class MainViewModel extends ViewModel {
         startDetail.setValue(id);
     }
 
-    public LiveData<Long> getStartDetail() {
+    public SingleLiveEvent<Long> getStartDetail() {
         return startDetail;
     }
 
@@ -54,7 +55,7 @@ public class MainViewModel extends ViewModel {
         startDeleteDialog.setValue(id);
     }
 
-    public LiveData<Long> getDeleteDialog(){
+    public SingleLiveEvent<Long> getDeleteDialog(){
         return startDeleteDialog;
     }
 

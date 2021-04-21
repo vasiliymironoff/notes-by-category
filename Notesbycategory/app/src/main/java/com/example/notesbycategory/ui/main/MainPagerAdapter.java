@@ -21,8 +21,6 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 
     static List<Category> title = new ArrayList<>();
 
-
-
     public MainPagerAdapter(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
 

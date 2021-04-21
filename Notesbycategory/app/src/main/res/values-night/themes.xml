@@ -15,6 +15,7 @@
         <item name="colorAccent">@color/red</item>
         <item name="actionBarStyle">@color/light</item>
         <item name="colorControlNormal">@color/light</item>
+
     </style>
 
     <style name="TabLayoutStyle" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -24,4 +25,5 @@
         <item name="tabTextColor">@color/light</item>
         <item name="android:background">@color/lightdark</item>
     </style>
+
 </resources>

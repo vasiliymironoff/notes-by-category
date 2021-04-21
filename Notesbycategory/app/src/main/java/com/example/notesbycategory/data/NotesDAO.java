@@ -30,6 +30,9 @@ public interface NotesDAO {
 
     @Query("DELETE FROM Note WHERE mid=:id")
     void deleteNoteById(int id);
+
+    @Query("DELETE FROM Note")
+    void deleteAll();
     @Insert
     void insert(Note note);
 

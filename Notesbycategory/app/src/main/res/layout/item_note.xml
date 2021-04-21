@@ -39,10 +39,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_baseline_clear_24"
+            android:src="@drawable/ic_baseline_delete_24"
             android:layout_centerVertical="true"
             android:layout_marginTop="4dp"
-            android:layout_marginRight="4dp"/>
+            android:layout_marginRight="4dp"
+            android:layout_marginLeft="8dp"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

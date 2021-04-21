@@ -2,14 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
-        android:title="Настройки"
-        android:icon="@drawable/ic_baseline_settings_24"
-        app:showAsAction="ifRoom"
-        android:id="@+id/settings"/>
-    <item
-        android:title="Очистить категорию"
-        android:icon="@drawable/ic_baseline_delete_24"
-        app:showAsAction="never"
-        android:id="@+id/deleteByCategory"/>
+        android:title="name"
+        android:id="@+id/never"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/rename"
+                android:title="Переименовать категорию"
+                android:icon="@drawable/ic_baseline_drive_file_rename_outline_24"
+                app:showAsAction="never"/>
+
+            <item
+                android:title="Очистить категорию"
+                android:icon="@drawable/ic_baseline_delete_sweep_24"
+                app:showAsAction="never"
+                android:id="@+id/deleteByCategory" />
+
+            <item
+                android:title="Настройки"
+                app:showAsAction="never"
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_baseline_settings_24"/>
+        </menu>
+    </item>
 </menu>

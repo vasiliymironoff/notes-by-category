@@ -3,10 +3,12 @@ package com.example.notesbycategory.ui.detail;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.icu.text.CaseMap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -15,11 +17,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
+import com.example.notesbycategory.databinding.ActivityDetailBinding;
 import com.example.notesbycategory.model.Category;
 import com.example.notesbycategory.model.Note;
 import com.example.notesbycategory.ui.main.MainViewModel;
@@ -31,100 +35,105 @@ public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID = "EXTRA_ID";
     public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
-    Note note;
 
-    List<Category> categoryForSpinner = new ArrayList<>();
-    Spinner spinner;
-    EditText editText;
-
-    ArrayAdapter<String> spinnerAdapter;
     DetailViewModel model;
+    ActivityDetailBinding binding;
+
+    Spinner spinner;
+    List<String> titles;
+    ArrayAdapter<String> spinnerAdapter;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        editText = findViewById(R.id.edittext);
-        spinner = findViewById(R.id.spinner);
-
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
         model = new ViewModelProvider(this, new ViewModelProvider.AndroidViewModelFactory(getApplication())).get(DetailViewModel.class);
+        binding.setModel(model);
 
-        List<String> titles = new ArrayList<>();
-        model.category.observe(this, new Observer<List<Category>>() {
-            @Override
-            public void onChanged(List<Category> categories) {
-                categoryForSpinner.addAll(categories);
-                for(Category c: categoryForSpinner) {
-                    if (c.getId() < model.count) titles.add(c.getName());
-                }
-                spinnerAdapter.notifyDataSetChanged();
+        initToolbar();
 
-            }
-        });
+        initNote();
 
-        spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_simple_spinner, titles);
-        spinner.setAdapter(spinnerAdapter);
-        spinner.setPrompt("Категории");
-
-        if(getIntent().getLongExtra(EXTRA_ID, -1) == -1){
-            getSupportActionBar().setTitle("Новая заметка");
-
-            note = new Note();
-            note.setCategory(getIntent().getIntExtra(EXTRA_CATEGORY, 0));
-
-        } else {
-            getSupportActionBar().setTitle("Изменить заметку");
-
-            note = App.getInstance().getNotesDAO().getNote(getIntent().getLongExtra(EXTRA_ID, -1));
-            editText.setText(note.getText());
-        }
-        spinner.setSelection(note.getCategory());
-
-
-    }
-
-    public static void start(Activity caller, long id, int category){
-        Intent intent = new Intent(caller, DetailActivity.class);
-        intent.putExtra(EXTRA_CATEGORY, category);
-        if(id != -1){
-            intent.putExtra(EXTRA_ID, id);
-        }
-        caller.startActivity(intent);
+        initSpinner();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.save_note , menu);
+        getMenuInflater().inflate(R.menu.save_note, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;
             case R.id.save:
-                if(editText.getText().toString().equals("")){
-                    Toast.makeText(this, "Вы ничего не написали",Toast.LENGTH_SHORT).show();
+                if (model.note.get().getText() == null) {
+                    Toast.makeText(this, "Вы ничего не написали", Toast.LENGTH_SHORT).show();
                 } else {
-                    note.setText(editText.getText().toString());
-                    note.setTime(System.currentTimeMillis());
+                    if(model.note.get().getText().trim().equals("")){
+                        Toast.makeText(this, "Нельзя сохранить строку состоящую из пробелов", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Note note = model.note.get();
+                        note.setTime(System.currentTimeMillis());
+                        note.setCategory(spinner.getSelectedItemPosition());
 
-                    note.setCategory(spinner.getSelectedItemPosition());
-                    if (getIntent().getLongExtra(EXTRA_ID, -1) != -1) {
-                        App.getInstance().getNotesDAO().update(note);
-                    } else {
-                        App.getInstance().getNotesDAO().insert(note);
+                        if (getIntent().getLongExtra(EXTRA_ID, -1) != -1) {
+                            App.getInstance().getNotesDAO().update(note);
+                        } else {
+                            App.getInstance().getNotesDAO().insert(note);
+                        }
+                        finish();
                     }
-                    finish();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public static void start(Activity caller, long id, int category) {
+        Intent intent = new Intent(caller, DetailActivity.class);
+        intent.putExtra(EXTRA_CATEGORY, category);
+
+        if (id != -1) {
+            intent.putExtra(EXTRA_ID, id);
+        }
+        caller.startActivity(intent);
+    }
+
+    public void initToolbar() {
+
+        Toolbar toolbar = binding.getRoot().findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    }
+
+    public void initNote() {
+        if (getIntent().getLongExtra(EXTRA_ID, -1) == -1) {
+            getSupportActionBar().setTitle("Новая заметка");
+            model.note.set(new Note());
+            int nCategory = getIntent().getIntExtra(EXTRA_CATEGORY, -1);
+            model.note.get().setCategory(nCategory);
+
+        } else {
+            getSupportActionBar().setTitle("Изменить заметку");
+            model.note.set(App.getInstance().getNotesDAO().getNote(getIntent().getLongExtra(EXTRA_ID, -1)));
+        }
+    }
+
+    public void initSpinner() {
+        spinner = binding.getRoot().findViewById(R.id.spinner);
+
+        titles = model.loadNameCategory();
+        spinnerAdapter = new ArrayAdapter<>(this, R.layout.item_simple_spinner, titles);
+        spinner.setAdapter(spinnerAdapter);
+        spinner.setPrompt("Категории");
+        spinner.setSelection(model.note.get().getCategory());
+    }
+
 }

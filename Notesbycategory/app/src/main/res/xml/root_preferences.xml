@@ -8,6 +8,10 @@
         app:title="@string/theme"
         />
 
+    <Preference android:title="Переименовать все категории"
+        app:key="rename"
+        android:summary="Переименовать все категории без удаления сохраненных заметок"/>
+
     <Preference
         android:title="Сброс"
         android:summary="Данное действие нельзя отменить"

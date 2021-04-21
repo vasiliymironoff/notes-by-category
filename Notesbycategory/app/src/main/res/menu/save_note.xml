@@ -6,5 +6,5 @@
         android:title="Сохранить"
         android:id="@+id/save"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_save_24"/>
+        android:icon="@drawable/ic_baseline_done_24"/>
 </menu>

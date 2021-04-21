@@ -4,7 +4,7 @@
 
     <item
         android:title="Сохранить"
-        android:icon="@drawable/ic_baseline_done_24"
+        android:icon="@drawable/ic_baseline_check_circle_outline_24"
         app:showAsAction="ifRoom"
         android:id="@+id/accept"/>
 </menu>

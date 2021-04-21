@@ -63,11 +63,21 @@ public class InitialActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("rename", false)){
+            model.initModelForRename();
+            adapter.notifyDataSetChanged();
+        }
+
     }
     private void initToolbar(){
         Toolbar toolbar = binding.getRoot().findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Начальная настройка");
+        if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("first", true)){
+            getSupportActionBar().setTitle("Начальная настройка");
+        } else {
+            getSupportActionBar().setTitle("Переименование категорий");
+        }
+
     }
 
     private void initRecycler(){
@@ -91,7 +101,7 @@ public class InitialActivity extends AppCompatActivity {
             for(int i=0; i<model.count.get(); i++){
                 Category c = model.category.get(i);
 
-                if(c.getName().equals("")){
+                if(c.getName().trim().equals("")){
                     c.setName("Категория " + (c.getId()+1));
                 }
 
@@ -102,19 +112,20 @@ public class InitialActivity extends AppCompatActivity {
                 }
             }
 
-
+            PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("rename", false).apply();
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first",false).apply();
+
             startMainActivity();
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void startMainActivity(){
-        if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("first", true)){
+        if (!(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("first", true)
+                || PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("rename", false))){
             Intent intent = new Intent(InitialActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
         }
-
     }
 }

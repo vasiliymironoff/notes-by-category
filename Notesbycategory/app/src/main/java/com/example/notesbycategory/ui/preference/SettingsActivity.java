@@ -2,6 +2,7 @@ package com.example.notesbycategory.ui.preference;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Switch;
 
@@ -49,7 +50,21 @@ public class SettingsActivity extends AppCompatActivity {
             public void onChanged(Boolean aBoolean) {
                 if(aBoolean){
                     App.getInstance().getCategoryDAO().deleteAll();
+                    App.getInstance().getNotesDAO().deleteAll();
                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first", true).apply();
+
+                    Intent intent = new Intent(SettingsActivity.this, InitialActivity.class);
+                    startActivity(intent);
+                    finishAffinity();
+                }
+            }
+        });
+
+        model.getRename().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean){
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("rename", true).apply();
                     Intent intent = new Intent(SettingsActivity.this, InitialActivity.class);
                     startActivity(intent);
                     finishAffinity();
@@ -63,15 +78,27 @@ public class SettingsActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
-            Preference button = findPreference("reset");
             model = new ViewModelProvider(getActivity(), new ViewModelProvider.AndroidViewModelFactory(getActivity().getApplication())).get(SettingsViewModel.class);
-            button.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+
+            Preference rename = findPreference("rename");
+
+            rename.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    model.setRename(true);
+                    return false;
+                }
+            });
+            Preference reset = findPreference("reset");
+
+            reset.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     model.setReset(true);
                     return false;
                 }
             });
+
         }
     }
 
