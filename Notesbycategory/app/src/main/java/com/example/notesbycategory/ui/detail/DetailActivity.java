@@ -33,9 +33,14 @@ import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
 
+    public static final int REQUEST_DETAIL = 938;
+
     public static final String EXTRA_ID = "EXTRA_ID";
     public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
 
+    public static final String EXTRA_SNACKBAR = "EXTRA_SNACKBAR";
+
+    private Note startNote;
     DetailViewModel model;
     ActivityDetailBinding binding;
 
@@ -67,8 +72,13 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent intent = new Intent();
         switch (item.getItemId()) {
             case android.R.id.home:
+
+                intent.putExtra(EXTRA_SNACKBAR, 0);
+
+                setResult(REQUEST_DETAIL, intent);
                 finish();
                 break;
             case R.id.save:
@@ -81,12 +91,22 @@ public class DetailActivity extends AppCompatActivity {
                         Note note = model.note.get();
                         note.setTime(System.currentTimeMillis());
                         note.setCategory(spinner.getSelectedItemPosition());
+                        intent = new Intent();
 
                         if (getIntent().getLongExtra(EXTRA_ID, -1) != -1) {
                             App.getInstance().getNotesDAO().update(note);
+
+                            if(note.getCategory() == startNote.getCategory() && note.getText().equals(startNote.getText())){
+                                intent.putExtra(EXTRA_SNACKBAR, 0);
+                            }else {
+                                intent.putExtra(EXTRA_SNACKBAR, 2);
+                            }
+
                         } else {
                             App.getInstance().getNotesDAO().insert(note);
+                            intent.putExtra(EXTRA_SNACKBAR, 1);
                         }
+                        setResult(REQUEST_DETAIL, intent);
                         finish();
                     }
                 }
@@ -102,7 +122,7 @@ public class DetailActivity extends AppCompatActivity {
         if (id != -1) {
             intent.putExtra(EXTRA_ID, id);
         }
-        caller.startActivity(intent);
+        caller.startActivityForResult(intent, REQUEST_DETAIL);
     }
 
     public void initToolbar() {
@@ -123,6 +143,7 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             getSupportActionBar().setTitle("Изменить заметку");
             model.note.set(App.getInstance().getNotesDAO().getNote(getIntent().getLongExtra(EXTRA_ID, -1)));
+            startNote = App.getInstance().getNotesDAO().getNote(getIntent().getLongExtra(EXTRA_ID, -1));
         }
     }
 
@@ -136,4 +157,12 @@ public class DetailActivity extends AppCompatActivity {
         spinner.setSelection(model.note.get().getCategory());
     }
 
+    @Override
+    public void onBackPressed() {
+
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_SNACKBAR, 0);
+        setResult(REQUEST_DETAIL, intent);
+        finish();
+    }
 }

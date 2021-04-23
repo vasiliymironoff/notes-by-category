@@ -13,6 +13,11 @@
         android:summary="Переименовать все категории без удаления сохраненных заметок"/>
 
     <Preference
+        app:key="deleteNotes"
+        android:title="Удалить заметки"
+        android:summary="Удалить все сохранненные заметки"/>
+
+    <Preference
         android:title="Сброс"
         android:summary="Данное действие нельзя отменить"
         app:key="reset"/>

@@ -1,10 +1,12 @@
 package com.example.notesbycategory.ui.main;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
@@ -22,14 +24,17 @@ import android.view.MenuItem;
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
 import com.example.notesbycategory.model.Category;
+import com.example.notesbycategory.model.Note;
 import com.example.notesbycategory.ui.detail.DetailActivity;
 import com.example.notesbycategory.ui.dialog.DialogDelete;
 import com.example.notesbycategory.ui.dialog.DialogRename;
 import com.example.notesbycategory.ui.preference.SettingsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
+import java.util.Observable;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     ViewPager pager;
     TabLayout tablayout;
-
+    FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("theme", false)) {
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         initPager();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> {
             DetailActivity.start(MainActivity.this, -1, pager.getCurrentItem());
         });
@@ -78,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 dialog.show(getSupportFragmentManager(), "delete");
             }
         });
+
     }
 
     @Override
@@ -105,6 +111,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 dialog.setArguments(bundle);
                 dialog.show(getSupportFragmentManager(), "rename");
                 adapter.notifyDataSetChanged();
+                return true;
+            case R.id.deleteByCategoryDone:
+                App.getInstance().getNotesDAO().deleteNotesByCategoryAndDone(pager.getCurrentItem(), true);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -143,7 +152,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         pager.setAdapter(adapter);
         tablayout.setupWithViewPager(pager);
+    }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if(requestCode == DetailActivity.REQUEST_DETAIL){
+            int status = data.getIntExtra(DetailActivity.EXTRA_SNACKBAR, -1);
+            switch (status){
+                case 0:
+                    return;
+                case 1:
+                    Snackbar.make(findViewById(R.id.fragment_main), "Заметка добавлена.", Snackbar.LENGTH_SHORT).show();
+                    return;
+                case 2:
+                    Snackbar.make(findViewById(R.id.constaint), "Заметка изменена.", Snackbar.LENGTH_SHORT).show();
+                    return;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

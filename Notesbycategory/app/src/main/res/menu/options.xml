@@ -10,16 +10,31 @@
         app:showAsAction="always">
         <menu>
             <item
-                android:id="@+id/rename"
-                android:title="Переименовать категорию"
-                android:icon="@drawable/ic_baseline_drive_file_rename_outline_24"
-                app:showAsAction="never"/>
+                android:title="Редактировать категорию"
+                android:id="@+id/edit"
+                android:icon="@drawable/ic_baseline_edit_24"
+                app:showAsAction="never">
+                <menu>
+                    <item
+                        android:id="@+id/rename"
+                        android:title="Переименовать категорию"
+                        android:icon="@drawable/ic_baseline_drive_file_rename_outline_24"
+                        app:showAsAction="never"/>
 
-            <item
-                android:title="Очистить категорию"
-                android:icon="@drawable/ic_baseline_delete_sweep_24"
-                app:showAsAction="never"
-                android:id="@+id/deleteByCategory" />
+                    <item
+                        android:title="Удалить выполненные"
+                        android:icon="@drawable/ic_baseline_check_box_24"
+                        app:showAsAction="never"
+                        android:id="@+id/deleteByCategoryDone" />
+
+                    <item
+                        android:title="Очистить категорию"
+                        android:icon="@drawable/ic_baseline_delete_sweep_24"
+                        app:showAsAction="never"
+                        android:id="@+id/deleteByCategory" />
+
+                </menu>
+            </item>
 
             <item
                 android:title="Настройки"

@@ -11,12 +11,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableList;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
+import com.example.notesbycategory.databinding.ItemNoteBinding;
 import com.example.notesbycategory.model.Note;
 import com.example.notesbycategory.ui.dialog.DialogDelete;
 
@@ -75,7 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     @NonNull
     @Override
     public RecyclerNoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new RecyclerNoteHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false), model);
+        return new RecyclerNoteHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_note, parent, false), model);
     }
 
     @Override
@@ -89,7 +92,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
         return notes.size();
     }
 
-    public void setNotes(List<Note> list){
+    public void setNotes(ObservableList<Note> list){
         notes.replaceAll(list);
     }
 
@@ -97,26 +100,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
 
     public static class RecyclerNoteHolder extends RecyclerView.ViewHolder {
-        CheckBox box;
-        TextView text;
-        ImageButton delete;
+
+        ItemNoteBinding binding;
         MainViewModel model;
         Note note;
         private boolean appearanceChooseBox = true;
-        public RecyclerNoteHolder(@NonNull View itemView, MainViewModel model) {
-            super(itemView);
+        public RecyclerNoteHolder(@NonNull ItemNoteBinding itemView, MainViewModel model) {
+            super(itemView.getRoot());
 
             this.model = model;
-            box = itemView.findViewById(R.id.check);
-            text = itemView.findViewById(R.id.text);
-            delete = itemView.findViewById(R.id.delete);
 
-
-            box.setOnClickListener(new View.OnClickListener() {
+            binding = itemView;
+            binding.check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(appearanceChooseBox){
-                        note.setDone(box.isChecked());
+                        note.setDone(binding.check.isChecked());
                         App.getInstance().getNotesDAO().update(note);
                         updateStrokeOut();
                     }
@@ -124,14 +123,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
                 }
             });
 
-            delete.setOnClickListener(new View.OnClickListener() {
+
+            binding.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     model.setupNoteForStartDeleteDialog(note.getMid());
                 }
             });
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            binding.getRoot().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     System.out.println("Setup");
@@ -143,18 +143,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
 
         public void bind(Note note){
             this.note = note;
+            binding.setNote(note);
             appearanceChooseBox = false;
-            box.setChecked(note.isDone());
+            binding.check.setChecked(note.isDone());
             appearanceChooseBox = true;
-            text.setText(note.getText());
+            binding.text.setText(note.getText());
             updateStrokeOut();
         }
 
         private void updateStrokeOut() {
             if (note.isDone()) {
-                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                binding.text.setPaintFlags(binding.text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                text.setPaintFlags(text.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+                binding.text.setPaintFlags(binding.text.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             }
         }
     }

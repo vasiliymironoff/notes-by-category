@@ -2,9 +2,12 @@ package com.example.notesbycategory.ui.main;
 
 import android.os.Bundle;
 
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableList;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
+import com.example.notesbycategory.databinding.FragmentNotesBinding;
 import com.example.notesbycategory.model.Note;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class NotesFragment extends Fragment {
     private int category;
     RecyclerAdapter adapter;
     MainViewModel model;
+    FragmentNotesBinding binding;
     public NotesFragment() {
 
     }
@@ -55,9 +58,20 @@ public class NotesFragment extends Fragment {
         model.noteByCategory.get(category).observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> notes) {
-                if(notes != null){
-                    adapter.setNotes(notes);
-                }
+
+                    ObservableList<Note> observableList = new ObservableArrayList<>();
+                    observableList.addAll(notes);
+                    model.notes.set(category, observableList);
+
+                    ObservableBoolean bool = new ObservableBoolean();
+                    bool.set(notes.isEmpty());
+                    model.isEmpty.set(category, bool);
+
+                    binding.setIsEmpty(model.isEmpty.get(category));
+
+                    adapter.setNotes(observableList);
+                    adapter.notifyDataSetChanged();
+
             }
         });
     }
@@ -65,12 +79,12 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_notes, container, false);
-        RecyclerView recycler = view.findViewById(R.id.recycler);
-
+        binding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.fragment_notes, container, false);
+        RecyclerView recycler = binding.getRoot().findViewById(R.id.recycler);
         recycler.setAdapter(adapter);
         recycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return view;
+        binding.setIsEmpty(model.isEmpty.get(category));
+        return binding.getRoot();
     }
 
 

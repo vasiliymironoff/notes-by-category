@@ -29,4 +29,7 @@ public interface CategoryDAO {
 
     @Query("DELETE FROM category")
     void deleteAll();
+
+    @Query("DELETE FROM category WHERE id = :id")
+    void deleteCategoryById(int id);
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Switch;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,8 @@ import androidx.preference.SwitchPreference;
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.R;
 import com.example.notesbycategory.ui.initial.InitialActivity;
+
+import java.util.prefs.PreferenceChangeEvent;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -86,6 +89,16 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     model.setRename(true);
+                    return false;
+                }
+            });
+
+            Preference deleteNote = findPreference("deleteNotes");
+            deleteNote.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    App.getInstance().getNotesDAO().deleteAll();
+                    Toast.makeText(getContext(), "Заметки удалены", Toast.LENGTH_LONG).show();
                     return false;
                 }
             });

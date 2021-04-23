@@ -1,14 +1,10 @@
 package com.example.notesbycategory.ui.main;
 
-import android.content.SharedPreferences;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LifecycleOwner;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableList;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.preference.PreferenceManager;
 
 import com.example.notesbycategory.App;
 import com.example.notesbycategory.SingleLiveEvent;
@@ -20,22 +16,27 @@ import java.util.List;
 
 public class MainViewModel extends ViewModel {
     int count;
+
+    public List<ObservableList<Note>> notes = new ArrayList<>();
+    public List<ObservableBoolean> isEmpty = new ArrayList<ObservableBoolean>();
+
     List<LiveData<List<Note>>> noteByCategory = new ArrayList<>();
 
     LiveData<List<Category>> category = App.getInstance().getCategoryDAO().getCategory();
+
 
     SingleLiveEvent<Long> startDetail = new SingleLiveEvent<>();
     SingleLiveEvent<Long> startDeleteDialog = new SingleLiveEvent<>();
 
 
     public MainViewModel(){
-        restartDataInModel();
-    }
-
-    public void restartDataInModel(){
         count = App.getInstance().getCategoryDAO().getCategoryNoLiveData().size();
         for(int i=0; i<count; i++){
             noteByCategory.add(loadNotesByCategory(i));
+            notes.add(new ObservableArrayList<>());
+            ObservableBoolean observableBoolean = new ObservableBoolean();
+            //observableBoolean.set(App.getInstance().getNotesDAO().loadAllNoteByIdNotLiveData(i).isEmpty());
+            isEmpty.add(observableBoolean);
         }
     }
 

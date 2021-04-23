@@ -111,6 +111,9 @@ public class InitialActivity extends AppCompatActivity {
                     App.getInstance().getCategoryDAO().updateCategory(c);
                 }
             }
+            for(int i=model.count.get(); i<10; i++){
+                App.getInstance().getCategoryDAO().deleteCategoryById(i);
+            }
 
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("rename", false).apply();
             PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("first",false).apply();

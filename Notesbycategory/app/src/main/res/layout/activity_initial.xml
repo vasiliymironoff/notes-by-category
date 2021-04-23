@@ -63,13 +63,12 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Изменение названия: "
+                    android:text="Названия: "
                     android:textSize="16sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="10dp"/>
 
                 <androidx.recyclerview.widget.RecyclerView
-
                     android:id="@+id/recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

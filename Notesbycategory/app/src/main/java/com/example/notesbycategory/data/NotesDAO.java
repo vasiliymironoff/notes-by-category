@@ -22,6 +22,9 @@ public interface NotesDAO {
     @Query("SELECT * FROM Note WHERE category = :category ")
     LiveData<List<Note>> loadAllNoteById(int category);
 
+    @Query("SELECT * FROM Note WHERE category = :category ")
+    List<Note> loadAllNoteByIdNotLiveData(int category);
+
     @Query("SELECT * FROM Note WHERE mid = :id ")
     Note getNote(long id);
 
@@ -33,6 +36,9 @@ public interface NotesDAO {
 
     @Query("DELETE FROM Note")
     void deleteAll();
+
+    @Query("DELETE FROM Note WHERE category= :category and done = :done")
+    void deleteNotesByCategoryAndDone(int category, boolean done);
     @Insert
     void insert(Note note);
 

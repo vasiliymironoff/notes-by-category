@@ -23,7 +23,6 @@ public class InitialViewModel extends ViewModel {
         category.clear();
         List<Category> categoryList= App.getInstance().getCategoryDAO().getCategoryNoLiveData();
         category.addAll(categoryList);
-        count.set(categoryList.size());
     }
 
 
